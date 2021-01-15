@@ -45,15 +45,15 @@ public class VideoDrawerPlus {
         vertexBuffer = BufferUtils.getFloatBuffer(vertexData);
         textureVertexBuffer = BufferUtils.getFloatBuffer(textureVertexData);
         // 灵魂出窍
-//        programId = LoadUtils.initProgram(context, "video.vsh", "gost.fsh");
+        //programId = LoadUtils.initProgram(context, "video.vsh", "gost.fsh");
         // 毛刺效果
-//        programId = LoadUtils.initProgram(context, "video.vsh", "video_ci.fsh");
+        //programId = LoadUtils.initProgram(context, "video.vsh", "video_ci.fsh");
         // 色散效果
-//        programId = LoadUtils.initProgram(context, "video.vsh", "video_offset.fsh");
+        programId = LoadUtils.initProgram(context, "video.vsh", "video_offset.fsh");
         // 抖动效果
 //        programId = LoadUtils.initProgram(context, "video_scale.vsh", "video_offset.fsh");
         // 扭曲效果
-        programId = LoadUtils.initProgram(context, "video.vsh", "video_rotate.fsh");
+        //programId = LoadUtils.initProgram(context, "video.vsh", "video_rotate.fsh");
     }
 
     public void draw(int textureId, float[] projectionMatrix, float[] sTMatrix) {

@@ -26,6 +26,7 @@ public class VideoRender implements
 
     private final Context context; // 上下文
     private final File video; // 视频文件
+    private final String url;
 
     private MediaPlayer mediaPlayer; // 视频播放器
 
@@ -43,8 +44,15 @@ public class VideoRender implements
     public VideoRender(Context context, File video) {
         this.context = context;
         this.video = video;
+        this.url = null;
     }
-
+    
+    public VideoRender(Context context, String url) {
+        this.context = context;
+        this.video = null;
+        this.url = url;
+    }
+    
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.e("VideoRender", "onSurfaceCreated: " + Thread.currentThread().getName());
@@ -52,8 +60,8 @@ public class VideoRender implements
         videoDrawer = new VideoDrawerPlus(context);
         initMediaPlayer();
 
-        mediaPlayer.seekTo(1000 * 40);
-        mediaPlayer.start();
+        //mediaPlayer.seekTo(1000 * 40);
+        //mediaPlayer.start();
     }
 
 
@@ -91,13 +99,26 @@ public class VideoRender implements
     private void initMediaPlayer() {
         mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(context, Uri.fromFile(video));
+            if (video != null) {
+                mediaPlayer.setDataSource(context, Uri.fromFile(video));
+            }
+            else {
+                Log.e("VideoRender", "setUrl: " + url);
+                mediaPlayer.setDataSource(url);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setLooping(true);
         mediaPlayer.setOnVideoSizeChangedListener(this);
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                Log.e("VideoRender", "onPrepared()");
+                mp.start();
+            }
+        });
 
         int[] textures = new int[1];
         GLES30.glGenTextures(1, textures, 0);
@@ -111,11 +132,14 @@ public class VideoRender implements
         mediaPlayer.setSurface(surface);
         surface.release();
 
+        /*
         try {
             mediaPlayer.prepare();
         } catch (IOException t) {
             Log.e("Prepare ERROR", "onSurfaceCreated: ");
-        }
+        }*/
+        
+        mediaPlayer.prepareAsync();
     }
 
 
